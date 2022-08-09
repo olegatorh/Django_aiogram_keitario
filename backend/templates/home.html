@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Home</title>
+        <!-- Font Awesome -->
+        <link
+                href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+                rel="stylesheet"
+        />
+        <!-- Google Fonts -->
+        <link
+                href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+                rel="stylesheet"
+        />
+        <!-- MDB -->
+        <link
+                href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.4.0/mdb.min.css"
+                rel="stylesheet"
+        />
+        <style>
+            .custom_input{
+                width: 550px;
+            }
+
+            .block_left {
+                width:50%;
+                height:800px;
+                overflow:auto;
+                float:left;
+            }
+            .block-right{
+                width:50%;
+                height:800px;
+                overflow:auto;
+            }
+        </style>
+    </head>
+    <body class="body">
+        <div class="block_left">
+            <form action="" method="POST" class="form_position">
+                {% csrf_token %}
+            <div class="form-outline mb-4 custom_input" style="margin-top: 1%">
+                <input type="text" name="url"  id="url" class="form-control"/>
+                <label class="form-label" for="url">URL,  example: http://000.000.00.000/admin_api/v1/conversions/log</label>
+            </div>
+            <div class="form-outline mb-4 custom_input" style="margin-top: 1%">
+                <input type="text" name="token"  id="token" class="form-control"/>
+                <label class="form-label" for="token">TOKEN, example: 1g12e90dfad2f67bf250b0aw288171tf</label>
+            </div>
+            <div class="md-form md-outline input-with-post-icon datepicker custom_input">
+                <label for="date_from">Date from:</label>
+                <input placeholder="Select date" type="date" name="date_from" id="date_from" class="form-control">
+            </div>
+            <div class="md-form md-outline input-with-post-icon datepicker custom_input">
+                <label for="date_to">Date to:</label>
+                <input placeholder="Select date" type="date" name="date_to" id="date_to" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-dark btn-block mb-4 custom_input" value="OK">Send request</button>
+        </form>
+             {% if messages %}
+                {% for message in messages %}
+                {{message}}
+                {% endfor %}
+            {% endif %}
+            {% if statusCode %}
+                <p>status Code: {{ statusCode }}.</p>
+            {% endif %}
+        </div>
+        <div class="block-right">
+            <br/>
+            {% if content %}
+                <p>total: {{ content.total }}</p>
+                <p>execution_time: {{ content.meta.execution_time }} </p>
+                <p>datetime: {{ content.meta.datetime }}</p>
+            {% endif %}
+            {% if url == 'rsions/log' %}
+                <table class="table">
+                    <thead>
+                        <tr>
+                          <th scope="col">conversion_id</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for value in content.rows %}
+                            <tr>
+                              <td>{{ value.conversion_id }}</td>
+                            </tr>
+                        {% endfor %}
+                      </tbody>
+                </table>
+            {% endif %}
+            {% if url == 'clicks/log' %}
+                <table class="table">
+                    <thead>
+                            <tr>
+                                {% for value in content.rows.0 %}
+                                    <th scope="col">{{value}}</th>
+                                {% endfor %}
+                            </tr>
+                      </thead>
+                      <tbody>
+                        {% for value in content.rows %}
+                        <tr>
+                            {% for i in value.values %}
+                                <td>
+                                    {{i}}
+                                </td>
+                            {% endfor %}
+
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                </table>
+            {% endif %}
+        </div>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.4.0/mdb.min.js"></script>
+    </body>
+</html>
